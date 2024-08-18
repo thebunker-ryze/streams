@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streams Number Revealer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+        }
+        #numberDisplay {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        button {
+            font-size: 1.5rem;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="numberDisplay">Click to reveal a number</div>
+        <button onclick="revealNumber()">Reveal Number</button>
+    </div>
+
+    <script>
+        // Number array: 1-10 (once), 11-19 (twice), 20-30 (once), and a Joker
+        const numbers = [
+            ...Array.from({length: 10}, (_, i) => i + 1),                // 1-10
+            ...Array.from({length: 9}, (_, i) => Array(2).fill(i + 11)).flat(),  // 11-19 (twice each)
+            ...Array.from({length: 11}, (_, i) => i + 20),               // 20-30
+            "Joker"                                                     // Joker
+        ];
+        
+        let drawnCount = 0; // To keep track of how many numbers have been drawn
+        
+        function revealNumber() {
+            if (drawnCount < 20) {
+                const randomIndex = Math.floor(Math.random() * numbers.length);
+                const selectedNumber = numbers.splice(randomIndex, 1)[0];
+                document.getElementById('numberDisplay').textContent = selectedNumber;
+                drawnCount++;
+            } else {
+                document.getElementById('numberDisplay').textContent = "All 20 numbers revealed!";
+            }
+        }
+    </script>
+</body>
+</html>
