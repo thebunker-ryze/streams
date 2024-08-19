@@ -19,8 +19,13 @@
         }
         #numberDisplay {
             font-size: 5rem;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             color: #333;
+        }
+        #counterDisplay {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #666;
         }
         button {
             font-size: 1.5rem;
@@ -30,16 +35,23 @@
             color: white;
             border: none;
             border-radius: 5px;
+            margin: 5px;
         }
         button:hover {
             background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div id="numberDisplay">Click to reveal a number</div>
-        <button onclick="revealNumber()">Reveal Number</button>
+        <div id="counterDisplay">Number 0 of 20</div>
+        <button id="prevButton" onclick="prevNumber()" disabled>Previous Number</button>
+        <button id="nextButton" onclick="nextNumber()">Next Number</button>
     </div>
 
     <script>
@@ -50,17 +62,39 @@
             ...Array.from({length: 11}, (_, i) => i + 20),               // 20-30
             "Joker"                                                     // Joker
         ];
-        
-        let drawnCount = 0; // To keep track of how many numbers have been drawn
-        
-        function revealNumber() {
-            if (drawnCount < 20) {
+
+        let drawnNumbers = []; // To keep track of drawn numbers
+        let currentIndex = -1; // Index to track current number display
+
+        function updateDisplay() {
+            if (currentIndex >= 0 && currentIndex < drawnNumbers.length) {
+                document.getElementById('numberDisplay').textContent = drawnNumbers[currentIndex];
+                document.getElementById('counterDisplay').textContent = `Number ${currentIndex + 1} of 20`;
+            } else if (currentIndex >= 20) {
+                document.getElementById('numberDisplay').textContent = "All 20 numbers revealed!";
+                document.getElementById('counterDisplay').textContent = "";
+            }
+            document.getElementById('prevButton').disabled = currentIndex <= 0;
+            document.getElementById('nextButton').disabled = currentIndex >= drawnNumbers.length - 1 && drawnNumbers.length >= 20;
+        }
+
+        function nextNumber() {
+            if (currentIndex < drawnNumbers.length - 1) {
+                currentIndex++;
+                updateDisplay();
+            } else if (drawnNumbers.length < 20) {
                 const randomIndex = Math.floor(Math.random() * numbers.length);
                 const selectedNumber = numbers.splice(randomIndex, 1)[0];
-                document.getElementById('numberDisplay').textContent = selectedNumber;
-                drawnCount++;
-            } else {
-                document.getElementById('numberDisplay').textContent = "All 20 numbers revealed!";
+                drawnNumbers.push(selectedNumber);
+                currentIndex++;
+                updateDisplay();
+            }
+        }
+
+        function prevNumber() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateDisplay();
             }
         }
     </script>
